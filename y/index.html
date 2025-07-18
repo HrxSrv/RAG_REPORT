@@ -1,89 +1,1477 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Firebase Hosting</title>
-
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/12.0.0/firebase-app-compat.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/12.0.0/firebase-auth-compat.js"></script>
-    <script defer src="/__/firebase/12.0.0/firebase-database-compat.js"></script>
-    <script defer src="/__/firebase/12.0.0/firebase-firestore-compat.js"></script>
-    <script defer src="/__/firebase/12.0.0/firebase-functions-compat.js"></script>
-    <script defer src="/__/firebase/12.0.0/firebase-messaging-compat.js"></script>
-    <script defer src="/__/firebase/12.0.0/firebase-storage-compat.js"></script>
-    <script defer src="/__/firebase/12.0.0/firebase-analytics-compat.js"></script>
-    <script defer src="/__/firebase/12.0.0/firebase-remote-config-compat.js"></script>
-    <script defer src="/__/firebase/12.0.0/firebase-performance-compat.js"></script>
-    <!-- 
-      initialize the SDK after all desired features are loaded, set useEmulator to false
-      to avoid connecting the SDK to running emulators.
-    -->
-    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
-
-    <style media="screen">
-      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
-      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
-      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
-      #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
-      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
-      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
-      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
-      @media (max-width: 600px) {
-        body, #message { margin-top: 0; background: white; box-shadow: none; }
-        body { border-top: 16px solid #ffa100; }
-      }
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Enhancing RAG Pipelines for Complex Weather Data Graphs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tiempos+Headline:wght@400;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <style>
+        :root {
+            --primary: #0f172a;
+            --secondary: #475569;
+            --accent: #3b82f6;
+            --muted: #64748b;
+            --surface: #f8fafc;
+            --border: #e2e8f0;
+        }
+        
+        .font-tiempos { font-family: 'Tiempos Headline', serif; }
+        .font-inter { font-family: 'Inter', sans-serif; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--primary);
+            background: var(--surface);
+        }
+        
+        .toc-fixed {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 320px;
+            height: 100vh;
+            background: white;
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            z-index: 50;
+            padding: 2rem 1.5rem;
+        }
+        
+        .main-content {
+            margin-left: 320px;
+            min-height: 100vh;
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.7);
+            z-index: 1;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .bento-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 2rem;
+            height: auto;
+        }
+        
+        .bento-main {
+            grid-row: 1 / 3;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 3rem 2rem;
+        }
+        
+        .bento-side-top,
+        .bento-side-bottom {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 1rem;
+            padding: 2rem;
+        }
+        
+        .insight-highlight {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            margin: 1rem 0;
+            font-weight: 500;
+        }
+        
+        .citation {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-decoration: none;
+            margin: 0 0.25rem;
+            transition: all 0.2s;
+        }
+        
+        .citation:hover {
+            background: var(--primary);
+            transform: translateY(-1px);
+        }
+        
+        .section-header {
+            border-left: 4px solid var(--accent);
+            padding-left: 1.5rem;
+            margin: 3rem 0 2rem 0;
+        }
+        
+        .toc-link {
+            display: block;
+            padding: 0.5rem 0;
+            color: var(--secondary);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .toc-link:hover,
+        .toc-link.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+        
+        .toc-link.sub {
+            padding-left: 1rem;
+            font-size: 0.875rem;
+        }
+        
+        @media (max-width: 1024px) {
+            .toc-fixed {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+            
+            .toc-fixed.mobile-open {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .bento-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto;
+            }
+            
+            .bento-main {
+                grid-row: 1;
+            }
+        }
+        
+        /* New media query for small screens */
+        @media (max-width: 768px) {
+            .hero-content {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            
+            .bento-main {
+                padding: 1.5rem 1rem;
+            }
+            
+            .bento-main h1 {
+                font-size: 2.5rem;
+                line-height: 1.2;
+            }
+            
+            .bento-side-top,
+            .bento-side-bottom {
+                padding: 1.5rem;
+            }
+            
+            .section-header {
+                padding-left: 1rem;
+            }
+            
+            .px-8 {
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+            
+            .py-16 {
+                padding-top: 2.5rem !important;
+                padding-bottom: 2.5rem !important;
+            }
+            
+            .py-12 {
+                padding-top: 2rem !important;
+                padding-bottom: 2rem !important;
+            }
+            
+            .py-8 {
+                padding-top: 1.5rem !important;
+                padding-bottom: 1.5rem !important;
+            }
+        }
+        
+        /* Additional small screen adjustments */
+        @media (max-width: 480px) {
+            .bento-main h1 {
+                font-size: 2rem;
+            }
+            
+            .hero-content .text-xl {
+                font-size: 1rem;
+            }
+            
+            .bento-main,
+            .bento-side-top,
+            .bento-side-bottom {
+                padding: 1rem;
+            }
+            
+            .section-header {
+                margin: 2rem 0 1.5rem 0;
+            }
+        }
     </style>
   </head>
+
   <body>
-    <div id="message">
-      <h2>Welcome</h2>
-      <h1>Firebase Hosting Setup Complete</h1>
-      <p>You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!</p>
-      <a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a>
-    </div>
-    <p id="load">Firebase SDK Loading&hellip;</p>
+    <!-- Mobile Menu Toggle -->
+    <button id="mobile-menu-toggle" class="lg:hidden fixed top-4 left-4 z-50 bg-white p-2 rounded-lg shadow-lg">
+      <i class="fas fa-bars text-xl"></i>
+    </button>
+
+    <!-- Fixed Table of Contents -->
+    <nav id="toc" class="toc-fixed">
+      <div class="mb-8">
+        <h2 class="font-tiempos text-xl font-bold text-gray-900 mb-4">Contents</h2>
+        <a href="#executive-summary" class="toc-link">Executive Summary</a>
+        <a href="#core-challenge" class="toc-link">Core Challenge</a>
+        <a href="#impact-embedding" class="toc-link sub">Impact on Embedding</a>
+        <a href="#polynomial-issue" class="toc-link sub">Polynomial Graph Issues</a>
+        <a href="#multimodal-solution" class="toc-link">Multimodal Solution</a>
+        <a href="#visual-complexity" class="toc-link sub">Visual Complexity</a>
+        <a href="#clip-openclip" class="toc-link sub">CLIP &amp; OpenCLIP</a>
+        <a href="#vector-integration" class="toc-link sub">Vector Integration</a>
+        <a href="#text-optimization" class="toc-link">Text Optimization</a>
+        <a href="#prompt-engineering" class="toc-link sub">Prompt Engineering</a>
+        <a href="#specialized-apis" class="toc-link sub">Specialized APIs</a>
+        <a href="#implementation" class="toc-link">Implementation</a>
+        <a href="#embedding-generation" class="toc-link sub">Embedding Generation</a>
+        <a href="#vector-storage" class="toc-link sub">Vector Storage</a>
+        <a href="#hybrid-search" class="toc-link sub">Hybrid Search</a>
+        <a href="#scaling" class="toc-link">Scaling &amp; Optimization</a>
+        <a href="#domain-embeddings" class="toc-link sub">Domain Alignment</a>
+        <a href="#indexing" class="toc-link sub">Indexing Strategies</a>
+        <a href="#performance" class="toc-link sub">Performance Monitoring</a>
+        <a href="#digitization" class="toc-link">Graph Digitization</a>
+        <a href="#chart-ocr" class="toc-link sub">ChartOCR</a>
+        <a href="#continuous-curves" class="toc-link sub">Continuous Curves</a>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Hero Section -->
+      <section class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <div class="bento-grid max-w-7xl mx-auto p-8">
+            <!-- Main Content -->
+            <div class="bento-main">
+              <div class="mb-6">
+                <span class="inline-block px-4 py-2 bg-blue-500 text-white text-sm font-semibold rounded-full mb-4">
+                  Technical Analysis
+                </span>
+                <h1 class="font-tiempos text-5xl lg:text-6xl font-bold leading-tight mb-6">
+                  <em class="italic">Enhancing RAG Pipelines</em>
+                  <br/>
+                  for Complex Weather Data Graphs
+                </h1>
+                <p class="text-xl text-blue-100 leading-relaxed max-w-2xl">
+                  Addressing the fundamental challenge of insufficient textual descriptions for data-heavy polynomial graphs through multimodal embeddings and advanced optimization strategies.
+                </p>
+              </div>
+            </div>
+
+            <!-- Side Panels -->
+            <div class="bento-side-top">
+              <h3 class="font-tiempos text-2xl font-bold mb-4">Key Technologies</h3>
+              <ul class="space-y-2 text-sm">
+                <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i> CLIP &amp; OpenCLIP</li>
+                <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i> Pinecone Vector DB</li>
+                <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i> Mathpix Convert API</li>
+                <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i> Gemini 2.5 Pro</li>
+              </ul>
+            </div>
+
+            <div class="bento-side-bottom">
+              <h3 class="font-tiempos text-2xl font-bold mb-4">Impact Areas</h3>
+              <ul class="space-y-2 text-sm">
+                <li class="flex items-center"><i class="fas fa-arrow-up text-blue-400 mr-2"></i> Enhanced Recall Rates</li>
+                <li class="flex items-center"><i class="fas fa-arrow-up text-blue-400 mr-2"></i> Improved Precision</li>
+                <li class="flex items-center"><i class="fas fa-arrow-up text-blue-400 mr-2"></i> Complex Graph Handling</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Executive Summary -->
+      <section id="executive-summary" class="py-16 bg-white">
+        <div class="max-w-4xl mx-auto px-8">
+          <div class="section-header">
+            <h2 class="font-tiempos text-4xl font-bold text-gray-900">Executive Summary</h2>
+          </div>
+
+          <div class="prose prose-lg max-w-none">
+            <p class="text-xl text-gray-700 leading-relaxed mb-8">
+              This analysis addresses a critical bottleneck in Retrieval-Augmented Generation (RAG) pipelines: the inability of current textual description methods to capture the intricate details of complex weather data graphs, particularly polynomial representations. Our investigation reveals three primary solution pathways that can significantly enhance pipeline performance.
+            </p>
+
+            <div class="grid md:grid-cols-3 gap-8 my-12">
+              <div class="bg-blue-50 p-6 rounded-xl border border-blue-200">
+                <div class="text-blue-600 text-2xl mb-4">
+                  <i class="fas fa-eye"></i>
+                </div>
+                <h3 class="font-tiempos text-xl font-bold mb-3">Multimodal Embeddings</h3>
+                <p class="text-gray-700">Leverage CLIP and OpenCLIP models to generate embeddings directly from graph images, capturing visual complexity beyond textual limitations.</p>
+              </div>
+
+              <div class="bg-green-50 p-6 rounded-xl border border-green-200">
+                <div class="text-green-600 text-2xl mb-4">
+                  <i class="fas fa-cogs"></i>
+                </div>
+                <h3 class="font-tiempos text-xl font-bold mb-3">Text Optimization</h3>
+                <p class="text-gray-700">Enhance Gemini 2.5 Pro output through evolutionary prompt engineering and specialized OCR APIs for richer textual descriptions.</p>
+              </div>
+
+              <div class="bg-purple-50 p-6 rounded-xl border border-purple-200">
+                <div class="text-purple-600 text-2xl mb-4">
+                  <i class="fas fa-chart-line"></i>
+                </div>
+                <h3 class="font-tiempos text-xl font-bold mb-3">Graph Digitization</h3>
+                <p class="text-gray-700">Investigate tools like ChartOCR for extracting structured data from standard chart types, though continuous curves remain challenging.</p>
+              </div>
+            </div>
+
+            <div class="insight-highlight">
+              <i class="fas fa-lightbulb mr-2"></i>
+              <strong>Key Insight:</strong> The core challenge lies not in the sophistication of language models, but in the fundamental information loss when translating rich visual data to textual descriptions.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Core Challenge -->
+      <section id="core-challenge" class="py-16 bg-gray-50">
+        <div class="max-w-4xl mx-auto px-8">
+          <div class="section-header">
+            <h2 class="font-tiempos text-4xl font-bold text-gray-900">Core Challenge: Insufficient Textual Descriptions</h2>
+          </div>
+
+          <div class="prose prose-lg max-w-none">
+            <p class="text-xl text-gray-700 leading-relaxed mb-8">
+              The primary challenge identified is the <strong>inadequacy of textual descriptions generated by Gemini 2.5 Pro for complex, data-heavy graphs</strong>, particularly polynomial graphs found in weather data PDFs. These descriptions fail to capture the &#34;minute details&#34; present in the visualizations, leading to a breakdown in the subsequent stages of the RAG pipeline.
+            </p>
+
+            <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200 mb-8">
+              <h3 class="font-tiempos text-2xl font-bold mb-4">Problem Manifestation</h3>
+              <p class="text-gray-700 mb-4">
+                The core issue lies in the <strong>loss of critical information during the translation from a visual, data-rich representation to a purely textual one</strong>. This information loss directly impacts the quality of embeddings generated from these descriptions, compromising the effectiveness of the embedding search mechanism.
+              </p>
+              <p class="text-gray-700">
+                The problem is not merely a lack of verbosity in descriptions, but a <strong>fundamental inability of the current text-based approach to represent the nuanced, often continuous, data trends and specific visual features</strong> characteristic of scientific graphs.
+              </p>
+            </div>
+          </div>
+
+          <!-- Impact on Embedding -->
+          <div id="impact-embedding" class="mt-12">
+            <h3 class="font-tiempos text-3xl font-bold mb-6">Impact on Embedding and Search</h3>
+
+            <div class="bg-red-50 border-l-4 border-red-400 p-6 mb-8">
+              <div class="flex">
+                <div class="flex-shrink-0">
+                  <i class="fas fa-exclamation-triangle text-red-400 text-xl"></i>
+                </div>
+                <div class="ml-3">
+                  <h4 class="text-red-800 font-semibold mb-2">Critical Pipeline Failure</h4>
+                  <p class="text-red-700">
+                    Insufficient textual descriptions have a direct and detrimental impact on embedding and search processes. When descriptions lack necessary detail, the generated embeddings will also be deficient, leading to &#34;failed embeddings&#34; that cannot capture semantic richness.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <p class="text-gray-700 mb-6">
+              Consequently, when a user query is posed to the RAG system, the search mechanism fails to retrieve relevant graphs or documents. This occurs because embeddings of poorly described graphs do not accurately reflect their content, resulting in low similarity scores with relevant queries.
+              <a href="https://medium.com/@adnanmasood/optimizing-chunking-embedding-and-vectorization-for-retrieval-augmented-generation-ea3b083b68f7" class="citation" target="_blank">[152]</a>
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-8">
+              <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <h4 class="font-tiempos text-xl font-bold mb-4 text-red-600">Before Optimization</h4>
+                <ul class="space-y-2 text-gray-700">
+                  <li class="flex items-start"><i class="fas fa-times text-red-500 mr-2 mt-1"></i>Generic graph descriptions</li>
+                  <li class="flex items-start"><i class="fas fa-times text-red-500 mr-2 mt-1"></i>Loss of polynomial details</li>
+                  <li class="flex items-start"><i class="fas fa-times text-red-500 mr-2 mt-1"></i>Poor embedding quality</li>
+                  <li class="flex items-start"><i class="fas fa-times text-red-500 mr-2 mt-1"></i>Failed search retrieval</li>
+                </ul>
+              </div>
+
+              <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <h4 class="font-tiempos text-xl font-bold mb-4 text-green-600">After Optimization</h4>
+                <ul class="space-y-2 text-gray-700">
+                  <li class="flex items-start"><i class="fas fa-check text-green-500 mr-2 mt-1"></i>Rich multimodal embeddings</li>
+                  <li class="flex items-start"><i class="fas fa-check text-green-500 mr-2 mt-1"></i>Preserved visual features</li>
+                  <li class="flex items-start"><i class="fas fa-check text-green-500 mr-2 mt-1"></i>Enhanced search accuracy</li>
+                  <li class="flex items-start"><i class="fas fa-check text-green-500 mr-2 mt-1"></i>Improved recall rates</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Polynomial Graph Issues -->
+          <div id="polynomial-issue" class="mt-12">
+            <h3 class="font-tiempos text-3xl font-bold mb-6">Specific Issue with Polynomial Weather Graphs</h3>
+
+            <p class="text-gray-700 mb-6">
+              The challenge is particularly acute for polynomial weather graphs containing &#34;minute details.&#34; Polynomial graphs represent continuous functions where specific shape, inflection points, maxima, minima, and overall trend are critical for interpretation.
+            </p>
+
+            <div class="bg-blue-50 p-6 rounded-xl border border-blue-200 mb-8">
+              <h4 class="font-tiempos text-xl font-bold mb-3 text-blue-900">Example: Temperature Fluctuation Graph</h4>
+              <p class="text-blue-800 mb-4">
+                A description might state &#34;a polynomial curve showing temperature increase&#34; but <strong>fail to capture</strong>:
+              </p>
+              <ul class="list-disc list-inside text-blue-800 space-y-1">
+                <li>Exact degree of the polynomial</li>
+                <li>Rate of change at specific intervals</li>
+                <li>Presence of multiple local extrema</li>
+                <li>Confidence intervals or error bars</li>
+                <li>Specific data point annotations</li>
+              </ul>
+            </div>
+
+            <div class="insight-highlight">
+              <i class="fas fa-exclamation-circle mr-2"></i>
+              <strong>Critical Gap:</strong> The loss of &#34;minute details&#34; means embedded representations are too coarse, leading to failed searches when queries target specific, nuanced aspects of weather data.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Multimodal Solution -->
+      <section id="multimodal-solution" class="py-16 bg-white">
+        <div class="max-w-4xl mx-auto px-8">
+          <div class="section-header">
+            <h2 class="font-tiempos text-4xl font-bold text-gray-900">Proposed Solution: Multimodal Embeddings</h2>
+          </div>
+
+          <!-- Visual Complexity -->
+          <div id="visual-complexity" class="mb-12">
+            <h3 class="font-tiempos text-3xl font-bold mb-6">Capturing Visual Complexity Beyond Text</h3>
+
+            <p class="text-xl text-gray-700 leading-relaxed mb-8">
+              The proposed solution involves <strong>leveraging multimodal embeddings</strong>, which offer a more robust way to represent and retrieve information from diverse data types by mapping them into a unified vector space.
+              <a href="https://medium.com/@adnanmasood/optimizing-chunking-embedding-and-vectorization-for-retrieval-augmented-generation-ea3b083b68f7" class="citation" target="_blank">[29]</a>
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-8 mb-8">
+              <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-200">
+                <h4 class="font-tiempos text-xl font-bold mb-4 text-blue-900">Traditional Approach</h4>
+                <div class="flex items-center justify-center h-32 bg-white rounded-lg mb-4">
+                  <img src="https://kimi-web-img.moonshot.cn/img/www.escienceediting.org/e18a024d6ce962eb577358b80585416182070bb8.jpg" alt="Abstract representation of text-based graph description limitations" class="w-full h-full object-cover rounded-lg" size="medium" aspect="wide" query="abstract text-based graph description limitations" referrerpolicy="no-referrer" data-modified="1" data-score="11599.00"/>
+                </div>
+                <p class="text-blue-800 text-sm">
+                  Text-only descriptions lose visual nuance and mathematical precision
+                </p>
+              </div>
+
+              <div class="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl border border-green-200">
+                <h4 class="font-tiempos text-xl font-bold mb-4 text-green-900">Multimodal Approach</h4>
+                <div class="flex items-center justify-center h-32 bg-white rounded-lg mb-4">
+                  <img src="https://kimi-web-img.moonshot.cn/img/www.nomic.ai/dba3f01d7a8fdc613efc89309f8862ffa1b94950.png" alt="Multimodal embedding concept combining text and visual data" class="w-full h-full object-cover rounded-lg" size="medium" aspect="wide" query="multimodal embedding visualization" referrerpolicy="no-referrer" data-modified="1" data-score="11595.00"/>
+                </div>
+                <p class="text-green-800 text-sm">
+                  Direct visual feature extraction preserves mathematical relationships
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
+              <h4 class="font-tiempos text-xl font-bold mb-4">Key Benefits</h4>
+              <div class="grid md:grid-cols-3 gap-6">
+                <div class="text-center">
+                  <div class="text-3xl text-blue-600 mb-3">
+                    <i class="fas fa-palette"></i>
+                  </div>
+                  <h5 class="font-semibold mb-2">Visual Feature Capture</h5>
+                  <p class="text-sm text-gray-600">Direct extraction of visual patterns and trends from graph images</p>
+                </div>
+                <div class="text-center">
+                  <div class="text-3xl text-green-600 mb-3">
+                    <i class="fas fa-search-plus"></i>
+                  </div>
+                  <h5 class="font-semibold mb-2">Enhanced Retrieval</h5>
+                  <p class="text-sm text-gray-600">Search based on visual similarity and combined multimodal cues</p>
+                </div>
+                <div class="text-center">
+                  <div class="text-3xl text-purple-600 mb-3">
+                    <i class="fas fa-infinity"></i>
+                  </div>
+                  <h5 class="font-semibold mb-2">Information Preservation</h5>
+                  <p class="text-sm text-gray-600">Maintains continuous data relationships lost in text summaries</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CLIP and OpenCLIP -->
+          <div id="clip-openclip" class="mb-12">
+            <h3 class="font-tiempos text-3xl font-bold mb-6">Key Technologies: CLIP and OpenCLIP</h3>
+
+            <p class="text-gray-700 mb-8">
+              <strong>CLIP (Contrastive Language-Image Pre-training)</strong> and its open-source counterpart <strong>OpenCLIP</strong> are foundational models for vision-language understanding, trained on vast datasets of images and corresponding textual descriptions.
+              <a href="https://github.com/mlfoundations/open_clip" class="citation" target="_blank">[162]</a>
+            </p>
+
+            <div class="bg-indigo-50 p-8 rounded-xl border border-indigo-200 mb-8">
+              <h4 class="font-tiempos text-2xl font-bold mb-4 text-indigo-900">ViT-G/14 Architecture</h4>
+              <p class="text-indigo-800 mb-4">
+                OpenCLIP offers various model architectures, with <strong>ViT-G/14 (Vision Transformer Giant/14)</strong> demonstrating impressive zero-shot image classification accuracy, indicating capability to understand diverse and complex visual information.
+              </p>
+              <div class="bg-white p-4 rounded-lg">
+                <h5 class="font-semibold mb-2">Model Configuration</h5>
+                <ul class="space-y-1 text-sm text-gray-700">
+                  <li><strong>Checkpoint:</strong> laion2b_s34b_b88k</li>
+                  <li><strong>Dataset:</strong> LAION-2B</li>
+                  <li><strong>Architecture:</strong> Vision Transformer Giant/14</li>
+                  <li><strong>Embedding Dim:</strong> 1024-dimensional vectors</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+              <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <h4 class="font-tiempos text-xl font-bold mb-4">Alternative Models</h4>
+                <ul class="space-y-3">
+                  <li class="flex items-start">
+                    <i class="fas fa-star text-yellow-500 mr-3 mt-1"></i>
+                    <div>
+                      <strong>Voyage AI &#34;voyage-multimodal-3&#34;</strong>
+                      <a href="https://medium.com/kx-systems/guide-to-multimodal-rag-for-images-and-text-10dab36e3117" class="citation" target="_blank">[34]</a>
+                      <br/>
+                      <span class="text-sm text-gray-600">Unified text/image embedding space with large token limit</span>
+                    </div>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-star text-yellow-500 mr-3 mt-1"></i>
+                    <div>
+                      <strong>BGE Visualized (bge-visualized-base-en-v1.5)</strong>
+                      <a href="https://milvus.io/docs/multimodal_rag_with_milvus.md" class="citation" target="_blank">[35]</a>
+                      <br/>
+                      <span class="text-sm text-gray-600">Specifically designed for multimodal RAG applications</span>
+                    </div>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-star text-yellow-500 mr-3 mt-1"></i>
+                    <div>
+                      <strong>Qwen3 Embedding Series</strong>
+                      <a href="https://milvus.io/blog/hands-on-rag-with-qwen3-embedding-and-reranking-models-using-milvus.md" class="citation" target="_blank">[30]</a>
+                      <br/>
+                      <span class="text-sm text-gray-600">Strong multilingual performance with instruction prompting</span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <h4 class="font-tiempos text-xl font-bold mb-4">Selection Criteria</h4>
+                <ul class="space-y-2">
+                  <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Performance on relevant benchmarks</li>
+                  <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Ability to handle weather graph complexity</li>
+                  <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Embedding dimensionality requirements</li>
+                  <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> API accessibility and computational cost</li>
+                  <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Integration with existing infrastructure</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Vector Integration -->
+          <div id="vector-integration" class="mb-12">
+            <h3 class="font-tiempos text-3xl font-bold mb-6">Integration with Vector Databases</h3>
+
+            <p class="text-gray-700 mb-8">
+              Integrating multimodal embeddings requires specialized <strong>vector databases designed for efficient storage, indexing, and searching of high-dimensional vector data</strong>. These databases enable fast similarity searches, forming the backbone of RAG retrieval.
+            </p>
+
+            <div class="grid md:grid-cols-3 gap-6 mb-8">
+              <div class="bg-blue-50 p-6 rounded-xl border border-blue-200 text-center">
+                <div class="text-4xl text-blue-600 mb-4">
+                  <i class="fas fa-database"></i>
+                </div>
+                <h4 class="font-tiempos text-xl font-bold mb-2">Pinecone</h4>
+                <p class="text-sm text-gray-700">Managed service with simplified setup and scaling</p>
+                <a href="https://medium.com/@arajoriya239/using-rag-with-images-embeddings-and-similarity-metric-062b7003d4d7" class="citation" target="_blank">[157]</a>
+              </div>
+
+              <div class="bg-green-50 p-6 rounded-xl border border-green-200 text-center">
+                <div class="text-4xl text-green-600 mb-4">
+                  <i class="fas fa-network-wired"></i>
+                </div>
+                <h4 class="font-tiempos text-xl font-bold mb-2">Weaviate</h4>
+                <p class="text-sm text-gray-700">Open-source with graph and vector capabilities</p>
+                <a href="https://orq.ai/blog/rag-pipelines" class="citation" target="_blank">[31]</a>
+              </div>
+
+              <div class="bg-purple-50 p-6 rounded-xl border border-purple-200 text-center">
+                <div class="text-4xl text-purple-600 mb-4">
+                  <i class="fas fa-rocket"></i>
+                </div>
+                <h4 class="font-tiempos text-xl font-bold mb-2">Milvus</h4>
+                <p class="text-sm text-gray-700">High-performance open-source vector database</p>
+                <a href="https://milvus.io/docs/multimodal_rag_with_milvus.md" class="citation" target="_blank">[35]</a>
+              </div>
+            </div>
+
+            <div class="bg-gray-100 p-6 rounded-xl">
+              <h4 class="font-tiempos text-xl font-bold mb-4">Implementation Process</h4>
+              <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                  <h5 class="font-semibold mb-3">Storage Structure</h5>
+                  <ul class="space-y-2 text-sm text-gray-700">
+                    <li class="flex items-start"><i class="fas fa-arrow-right text-blue-500 mr-2 mt-1"></i>Create index with matching dimensionality</li>
+                    <li class="flex items-start"><i class="fas fa-arrow-right text-blue-500 mr-2 mt-1"></i>Define similarity metric (cosine, dot product)</li>
+                    <li class="flex items-start"><i class="fas fa-arrow-right text-blue-500 mr-2 mt-1"></i>Configure metadata schema for context</li>
+                    <li class="flex items-start"><i class="fas fa-arrow-right text-blue-500 mr-2 mt-1"></i>Upsert vectors with associated metadata</li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 class="font-semibold mb-3">Metadata Fields</h5>
+                  <ul class="space-y-2 text-sm text-gray-700">
+                    <li class="flex items-start"><i class="fas fa-tag text-green-500 mr-2 mt-1"></i>Media type (image/text)</li>
+                    <li class="flex items-start"><i class="fas fa-tag text-green-500 mr-2 mt-1"></i>Source document path</li>
+                    <li class="flex items-start"><i class="fas fa-tag text-green-500 mr-2 mt-1"></i>Page number and position</li>
+                    <li class="flex items-start"><i class="fas fa-tag text-green-500 mr-2 mt-1"></i>Graph type and content description</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Text Optimization -->
+      <section id="text-optimization" class="py-16 bg-gray-50">
+        <div class="max-w-4xl mx-auto px-8">
+          <div class="section-header">
+            <h2 class="font-tiempos text-4xl font-bold text-gray-900">Alternative Approach: Text Optimization</h2>
+          </div>
+
+          <!-- Prompt Engineering -->
+          <div id="prompt-engineering" class="mb-12">
+            <h3 class="font-tiempos text-3xl font-bold mb-6">Improving Gemini 2.5 Pro via Prompt Engineering</h3>
+
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 mb-8">
+              <div class="flex">
+                <div class="flex-shrink-0">
+                  <i class="fas fa-lightbulb text-yellow-400 text-xl"></i>
+                </div>
+                <div class="ml-3">
+                  <h4 class="text-yellow-800 font-semibold mb-2">Evolutionary Computation Approach</h4>
+                  <p class="text-yellow-700">
+                    Research demonstrates that LLM prompts can be optimized using evolutionary computation for OCR text analysis, achieving higher precision with fewer inferences.
+                    <a href="https://www.jstage.jst.go.jp/article/pjsai/JSAI2024/0/JSAI2024_4N3GS601/_article/-char/en" class="citation" target="_blank">[74]</a>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 mb-8">
+              <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <h4 class="font-tiempos text-xl font-bold mb-4">Evolutionary Optimization Process</h4>
+                <ol class="space-y-3">
+                  <li class="flex items-start">
+                    <span class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3 mt-0.5">1</span>
+                    <span>Generate population of prompt variations</span>
+                  </li>
+                  <li class="flex items-start">
+                    <span class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3 mt-0.5">2</span>
+                    <span>Evaluate fitness based on description quality</span>
+                  </li>
+                  <li class="flex items-start">
+                    <span class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3 mt-0.5">3</span>
+                    <span>Select top-performing prompts</span>
+                  </li>
+                  <li class="flex items-start">
+                    <span class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3 mt-0.5">4</span>
+                    <span>Recombine and mutate selected prompts</span>
+                  </li>
+                  <li class="flex items-start">
+                    <span class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3 mt-0.5">5</span>
+                    <span>Iterate until optimal prompt emerges</span>
+                  </li>
+                </ol>
+              </div>
+
+              <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <h4 class="font-tiempos text-xl font-bold mb-4">Fitness Criteria</h4>
+                <ul class="space-y-2">
+                  <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Mathematical property capture</li>
+                  <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Polynomial degree identification</li>
+                  <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Turning point description</li>
+                  <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Weather trend accuracy</li>
+                  <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Axis and scale detail inclusion</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="bg-blue-50 p-6 rounded-xl border border-blue-200">
+              <h4 class="font-tiempos text-xl font-bold mb-4">Example Optimized Prompt Structure</h4>
+              <div class="bg-white p-4 rounded-lg font-mono text-sm">
+                <p class="text-gray-800 mb-2">&#34;Analyze the provided graph image. Identify the chart type. Describe the X and Y axes, including labels and units. List the key data trends observed, including any maxima, minima, and intercepts. If it&#39;s a polynomial, estimate its degree and describe its general shape.&#34;</p>
+                <a href="https://apidog.com/blog/gemini-2-0-flash-ocr/" class="citation" target="_blank">[58]</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Specialized APIs -->
+          <div id="specialized-apis" class="mb-12">
+            <h3 class="font-tiempos text-3xl font-bold mb-6">Specialized OCR and Diagram Understanding APIs</h3>
+
+            <p class="text-gray-700 mb-8">
+              While general-purpose OCR services excel at text extraction, specialized APIs offer enhanced capabilities for interpreting intricate visual data in scientific figures and mathematical expressions.
+            </p>
+
+            <!-- Comparison Table -->
+            <div class="overflow-x-auto mb-8">
+              <table class="w-full bg-white rounded-xl shadow-sm border border-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-6 py-4 text-left font-tiempos font-bold">API/Tool</th>
+                    <th class="px-6 py-4 text-left font-tiempos font-bold">Primary Focus</th>
+                    <th class="px-6 py-4 text-left font-tiempos font-bold">Key Features</th>
+                    <th class="px-6 py-4 text-left font-tiempos font-bold">Benefits</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                  <tr>
+                    <td class="px-6 py-4 font-semibold">Mathpix Convert API</td>
+                    <td class="px-6 py-4 text-sm">STEM content (equations, diagrams, charts)</td>
+                    <td class="px-6 py-4 text-sm">Digitizes to LaTeX, MathML; recognizes mathematical functions, axis scales, data points</td>
+                    <td class="px-6 py-4 text-sm">Precise extraction of polynomial equations; structured output ideal for embedding</td>
+                  </tr>
+                  <tr class="bg-gray-50">
+                    <td class="px-6 py-4 font-semibold">Google Cloud Vision API</td>
+                    <td class="px-6 py-4 text-sm">General image analysis, OCR</td>
+                    <td class="px-6 py-4 text-sm">Hierarchical text/layout detection; bounding boxes for text elements</td>
+                    <td class="px-6 py-4 text-sm">Accurate extraction of all textual elements with spatial context</td>
+                  </tr>
+                  <tr>
+                    <td class="px-6 py-4 font-semibold">Microsoft ChartOCR</td>
+                    <td class="px-6 py-4 text-sm">Data extraction from standard chart types</td>
+                    <td class="px-6 py-4 text-sm">Deep learning + rule-based interpretation; pivot point detection</td>
+                    <td class="px-6 py-4 text-sm">Potential to extract data points from line charts; structured table output</td>
+                  </tr>
+                  <tr class="bg-gray-50">
+                    <td class="px-6 py-4 font-semibold">LayoutLMv2</td>
+                    <td class="px-6 py-4 text-sm">Document layout analysis</td>
+                    <td class="px-6 py-4 text-sm">Identifies and classifies text elements within graphs; combines visual and textual info</td>
+                    <td class="px-6 py-4 text-sm">Accurate extraction and categorization of textual graph components</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+              <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <h4 class="font-tiempos text-xl font-bold mb-4">Mathpix Convert API</h4>
+                <p class="text-gray-700 mb-4">
+                  Specifically designed for STEM content, Mathpix excels at digitizing mathematical equations, chemical formulas, and complex diagrams into structured formats like LaTeX.
+                  <a href="https://mathpix.com/convert" class="citation" target="_blank">[85]</a>
+                </p>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                  <h5 class="font-semibold mb-2">Process Flow:</h5>
+                  <ol class="text-sm space-y-1">
+                    <li>1. Extract graph image from PDF</li>
+                    <li>2. Send to Mathpix API</li>
+                    <li>3. Receive LaTeX representation</li>
+                    <li>4. Generate structured description</li>
+                    <li>5. Embed for retrieval</li>
+                  </ol>
+                </div>
+              </div>
+
+              <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <h4 class="font-tiempos text-xl font-bold mb-4">Google Cloud Vision API</h4>
+                <p class="text-gray-700 mb-4">
+                  Advanced OCR features can extract textual information embedded within weather data graphs, including axis labels, legends, titles, and annotations.
+                  <a href="https://cloud.google.com/vision/docs/ocr" class="citation" target="_blank">[125]</a>
+                </p>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                  <h5 class="font-semibold mb-2">Text Detection Features:</h5>
+                  <ul class="text-sm space-y-1">
+                    <li>• Hierarchical text structure</li>
+                    <li>• Bounding box coordinates</li>
+                    <li>• Confidence scores</li>
+                    <li>• Language detection</li>
+                    <li>• Document text detection</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Implementation -->
+      <section id="implementation" class="py-16 bg-white">
+        <div class="max-w-4xl mx-auto px-8">
+          <div class="section-header">
+            <h2 class="font-tiempos text-4xl font-bold text-gray-900">Implementation Strategies</h2>
+          </div>
+
+          <!-- Embedding Generation -->
+          <div id="embedding-generation" class="mb-12">
+            <h3 class="font-tiempos text-3xl font-bold mb-6">Generating Image Embeddings with OpenCLIP</h3>
+
+            <div class="grid md:grid-cols-2 gap-8 mb-8">
+              <div class="bg-indigo-50 p-6 rounded-xl border border-indigo-200">
+                <h4 class="font-tiempos text-xl font-bold mb-4 text-indigo-900">Model Selection Criteria</h4>
+                <ul class="space-y-3">
+                  <li class="flex items-start">
+                    <i class="fas fa-microchip text-indigo-600 mr-3 mt-1"></i>
+                    <div>
+                      <strong>Performance:</strong> Zero-shot accuracy on ImageNet-1k (80.1% for ViT-G/14)
+                      <a href="https://github.com/mlfoundations/open_clip" class="citation" target="_blank">[162]</a>
+                    </div>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-expand-arrows-alt text-indigo-600 mr-3 mt-1"></i>
+                    <div>
+                      <strong>Dimensionality:</strong> 1024-dimensional embeddings for rich representation
+                    </div>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-database text-indigo-600 mr-3 mt-1"></i>
+                    <div>
+                      <strong>Training Data:</strong> LAION-2B dataset for broad visual understanding
+                    </div>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-tachometer-alt text-indigo-600 mr-3 mt-1"></i>
+                    <div>
+                      <strong>Resources:</strong> Balance between expressiveness and computational cost
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <h4 class="font-tiempos text-xl font-bold mb-4">LangChain Integration</h4>
+                <p class="text-gray-700 mb-4">
+                  LangChain provides seamless integration for OpenCLIP embedding generation through the
+                  <code class="bg-gray-100 px-2 py-1 rounded text-sm">OpenCLIPEmbeddings</code> class.
+                  <a href="https://python.langchain.com/docs/integrations/text_embedding/open_clip/" class="citation" target="_blank">[161]</a>
+                </p>
+                <div class="bg-gray-900 text-green-400 p-4 rounded-lg text-sm font-mono">
+                  <div>from langchain_experimental.open_clip import OpenCLIPEmbeddings</div>
+                  <div class="mt-2">clip_embd = OpenCLIPEmbeddings(</div>
+                  <div class="ml-4">model_name=&#34;ViT-g-14&#34;,</div>
+                  <div class="ml-4">checkpoint=&#34;laion2b_s34b_b88k&#34;</div>
+                  <div>)</div>
+                  <div class="mt-2">img_feat = clip_embd.embed_image([image_uri])</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Vector Storage -->
+          <div id="vector-storage" class="mb-12">
+            <h3 class="font-tiempos text-3xl font-bold mb-6">Storing and Querying Multimodal Embeddings</h3>
+
+            <div class="bg-blue-50 p-6 rounded-xl border border-blue-200 mb-8">
+              <h4 class="font-tiempos text-xl font-bold mb-4 text-blue-900">Pinecone Setup Process</h4>
+              <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                  <h5 class="font-semibold mb-3">Index Configuration</h5>
+                  <ul class="space-y-2 text-sm text-blue-800">
+                    <li><strong>Name:</strong> Unique identifier for the index</li>
+                    <li><strong>Dimension:</strong> Must match embedding model output (e.g., 1024)</li>
+                    <li><strong>Metric:</strong> &#34;cosine&#34; for CLIP embeddings</li>
+                    <li><strong>Spec:</strong> Serverless configuration options</li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 class="font-semibold mb-3">Implementation Example</h5>
+                  <div class="bg-gray-900 text-green-400 p-3 rounded-lg text-xs font-mono">
+                    <div>pinecone.create_index(</div>
+                    <div class="ml-4">name=&#34;weather-graphs&#34;,</div>
+                    <div class="ml-4">dimension=1024,</div>
+                    <div class="ml-4">metric=&#34;cosine&#34;,</div>
+                    <div class="ml-4">spec={&#34;serverless&#34;: {&#34;cloud&#34;: &#34;aws&#34;}}</div>
+                    <div>)</div>
+                  </div>
+                  <a href="https://medium.com/@arajoriya239/using-rag-with-images-embeddings-and-similarity-metric-062b7003d4d7" class="citation" target="_blank">[157]</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h4 class="font-tiempos text-xl font-bold mb-4">Similarity Metrics Comparison</h4>
+              <div class="grid md:grid-cols-3 gap-6">
+                <div class="text-center p-4 bg-green-50 rounded-lg border border-green-200">
+                  <div class="text-2xl text-green-600 mb-2">
+                    <i class="fas fa-angle-up"></i>
+                  </div>
+                  <h5 class="font-semibold mb-2">Cosine Similarity</h5>
+                  <p class="text-sm text-gray-700">Measures angle between vectors. Preferred for CLIP embeddings.</p>
+                </div>
+                <div class="text-center p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <div class="text-2xl text-blue-600 mb-2">
+                    <i class="fas fa-times"></i>
+                  </div>
+                  <h5 class="font-semibold mb-2">Dot Product</h5>
+                  <p class="text-sm text-gray-700">Considers both magnitude and direction. Good for normalized vectors.</p>
+                </div>
+                <div class="text-center p-4 bg-purple-50 rounded-lg border border-purple-200">
+                  <div class="text-2xl text-purple-600 mb-2">
+                    <i class="fas fa-ruler"></i>
+                  </div>
+                  <h5 class="font-semibold mb-2">Euclidean Distance</h5>
+                  <p class="text-sm text-gray-700">Straight-line distance. Less effective in high-dimensional spaces.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hybrid Search -->
+          <div id="hybrid-search" class="mb-12">
+            <h3 class="font-tiempos text-3xl font-bold mb-6">Combining Text and Image Embeddings</h3>
+
+            <p class="text-gray-700 mb-8">
+              Hybrid search strategies combine results from multiple retrieval methods to leverage the strengths of different approaches and data types.
+              <a href="https://medium.com/@adnanmasood/optimizing-chunking-embedding-and-vectorization-for-retrieval-augmented-generation-ea3b083b68f7" class="citation" target="_blank">[152]</a>
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-8">
+              <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <h4 class="font-tiempos text-xl font-bold mb-4">Fusion Strategies</h4>
+                <ul class="space-y-3">
+                  <li class="flex items-start">
+                    <i class="fas fa-plus text-blue-500 mr-3 mt-1"></i>
+                    <div>
+                      <strong>Score Averaging:</strong> Combine similarity scores from different retrieval methods
+                    </div>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-balance-scale text-blue-500 mr-3 mt-1"></i>
+                    <div>
+                      <strong>Weighted Sum:</strong> Apply different weights to different retrieval methods
+                    </div>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-sort-amount-up text-blue-500 mr-3 mt-1"></i>
+                    <div>
+                      <strong>Learning-to-Rank:</strong> Machine learning approach to combine results
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <h4 class="font-tiempos text-xl font-bold mb-4">Chunking Strategies</h4>
+                <div class="space-y-4">
+                  <div class="bg-gray-50 p-4 rounded-lg">
+                    <h5 class="font-semibold mb-2">Multimodal Chunks</h5>
+                    <p class="text-sm text-gray-700">Associate text segments with semantically related images to preserve context</p>
+                  </div>
+                  <div class="bg-gray-50 p-4 rounded-lg">
+                    <h5 class="font-semibold mb-2">Recursive Splitting</h5>
+                    <p class="text-sm text-gray-700">30-50% higher retrieval precision vs. fixed sizing with minimal overlap</p>
+                    <a href="https://medium.com/@adnanmasood/optimizing-chunking-embedding-and-vectorization-for-retrieval-augmented-generation-ea3b083b68f7" class="citation" target="_blank">[152]</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Scaling -->
+      <section id="scaling" class="py-16 bg-gray-50">
+        <div class="max-w-4xl mx-auto px-8">
+          <div class="section-header">
+            <h2 class="font-tiempos text-4xl font-bold text-gray-900">Scaling and Optimization</h2>
+          </div>
+
+          <!-- Domain Alignment -->
+          <div id="domain-embeddings" class="mb-12">
+            <h3 class="font-tiempos text-3xl font-bold mb-6">Domain-Aligned Embeddings</h3>
+
+            <div class="insight-highlight mb-8">
+              <i class="fas fa-chart-line mr-2"></i>
+              <strong>Performance Boost:</strong> Transformer-based sentence encoders, fine-tuned on enterprise lexicons, outperform generic models by double-digit recall on BEIR-class benchmarks.
+            </div>
+
+            <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200 mb-8">
+              <h4 class="font-tiempos text-2xl font-bold mb-6">Fine-tuning Process for Weather Data</h4>
+              <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                  <h5 class="font-semibold mb-4">Data Collection</h5>
+                  <ul class="space-y-2 text-sm text-gray-700">
+                    <li class="flex items-start"><i class="fas fa-cloud text-blue-500 mr-2 mt-1"></i>Meteorological charts and diagrams</li>
+                    <li class="flex items-start"><i class="fas fa-file-alt text-blue-500 mr-2 mt-1"></i>Scientific papers and reports</li>
+                    <li class="flex items-start"><i class="fas fa-chart-area text-blue-500 mr-2 mt-1"></i>Weather data visualizations</li>
+                    <li class="flex items-start"><i class="fas fa-tags text-blue-500 mr-2 mt-1"></i>Annotated graph datasets</li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 class="font-semibold mb-4">Training Approach</h5>
+                  <ul class="space-y-2 text-sm text-gray-700">
+                    <li class="flex items-start"><i class="fas fa-sync text-green-500 mr-2 mt-1"></i>Continue contrastive learning</li>
+                    <li class="flex items-start"><i class="fas fa-compress text-green-500 mr-2 mt-1"></i>Pull related pairs closer</li>
+                    <li class="flex items-start"><i class="fas fa-expand text-green-500 mr-2 mt-1"></i>Push unrelated pairs apart</li>
+                    <li class="flex items-start"><i class="fas fa-cog text-green-500 mr-2 mt-1"></i>LoRA adapters for efficiency</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-blue-50 p-6 rounded-xl border border-blue-200">
+              <h4 class="font-tiempos text-xl font-bold mb-4 text-blue-900">Expected Improvements</h4>
+              <div class="grid md:grid-cols-3 gap-6">
+                <div class="text-center">
+                  <div class="text-3xl text-blue-600 mb-2">
+                    <i class="fas fa-search-plus"></i>
+                  </div>
+                  <h5 class="font-semibold mb-2">Enhanced Sensitivity</h5>
+                  <p class="text-sm text-blue-800">Better recognition of weather-specific visual patterns</p>
+                </div>
+                <div class="text-center">
+                  <div class="text-3xl text-blue-600 mb-2">
+                    <i class="fas fa-bullseye"></i>
+                  </div>
+                  <h5 class="font-semibold mb-2">Improved Recall</h5>
+                  <p class="text-sm text-blue-800">Higher retrieval rates for meteorological queries</p>
+                </div>
+                <div class="text-center">
+                  <div class="text-3xl text-blue-600 mb-2">
+                    <i class="fas fa-microscope"></i>
+                  </div>
+                  <h5 class="font-semibold mb-2">Domain Precision</h5>
+                  <p class="text-sm text-blue-800">More accurate interpretation of specialized terminology</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Indexing Strategies -->
+          <div id="indexing" class="mb-12">
+            <h3 class="font-tiempos text-3xl font-bold mb-6">Indexing Strategies for High Recall</h3>
+
+            <div class="grid md:grid-cols-2 gap-8 mb-8">
+              <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <h4 class="font-tiempos text-xl font-bold mb-4">HNSW Indexing</h4>
+                <div class="bg-green-50 p-4 rounded-lg mb-4">
+                  <p class="text-green-800 text-sm font-semibold mb-2">Recommended: &#34;HNSW + metadata filtering for sub-100 ms retrieval at 95%+ recall&#34;</p>
+                  <a href="https://medium.com/@adnanmasood/optimizing-chunking-embedding-and-vectorization-for-retrieval-augmented-generation-ea3b083b68f7" class="citation" target="_blank">[152]</a>
+                </div>
+                <ul class="space-y-2 text-sm text-gray-700">
+                  <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Excellent speed and recall balance</li>
+                  <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Hierarchical navigable small world</li>
+                  <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Graph-based approximate search</li>
+                  <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Good default choice for most applications</li>
+                </ul>
+              </div>
+
+              <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <h4 class="font-tiempos text-xl font-bold mb-4">IVF-PQ Indexing</h4>
+                <div class="bg-blue-50 p-4 rounded-lg mb-4">
+                  <p class="text-blue-800 text-sm font-semibold mb-2">Scalable for large datasets with memory efficiency</p>
+                </div>
+                <ul class="space-y-2 text-sm text-gray-700">
+                  <li class="flex items-center"><i class="fas fa-check text-blue-500 mr-2"></i> Inverted File Index with Product Quantization</li>
+                  <li class="flex items-center"><i class="fas fa-check text-blue-500 mr-2"></i> Memory-efficient clustering</li>
+                  <li class="flex items-center"><i class="fas fa-check text-blue-500 mr-2"></i> Scalable for very large datasets</li>
+                  <li class="flex items-center"><i class="fas fa-check text-blue-500 mr-2"></i> Lightweight quantization option available</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="bg-gray-100 p-6 rounded-xl">
+              <h4 class="font-tiempos text-xl font-bold mb-4">Index Selection Guidelines</h4>
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                  <thead>
+                    <tr class="border-b border-gray-300">
+                      <th class="text-left py-3 font-semibold">Requirement</th>
+                      <th class="text-left py-3 font-semibold">Recommended Index</th>
+                      <th class="text-left py-3 font-semibold">Trade-offs</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-200">
+                    <tr>
+                      <td class="py-3">High recall critical</td>
+                      <td class="py-3 font-semibold text-green-600">HNSW</td>
+                      <td class="py-3">Higher memory usage</td>
+                    </tr>
+                    <tr>
+                      <td class="py-3">Large dataset (&gt;1M vectors)</td>
+                      <td class="py-3 font-semibold text-blue-600">IVF-PQ</td>
+                      <td class="py-3">Slightly lower recall</td>
+                    </tr>
+                    <tr>
+                      <td class="py-3">Memory-constrained</td>
+                      <td class="py-3 font-semibold text-purple-600">IVF-PQ + Quantization</td>
+                      <td class="py-3">Reduced accuracy</td>
+                    </tr>
+                    <tr>
+                      <td class="py-3">Mixed workload</td>
+                      <td class="py-3 font-semibold text-orange-600">HNSW + Metadata Filtering</td>
+                      <td class="py-3">Complex setup</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Performance Monitoring -->
+          <div id="performance" class="mb-12">
+            <h3 class="font-tiempos text-3xl font-bold mb-6">Performance Monitoring</h3>
+
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 mb-8">
+              <div class="flex">
+                <div class="flex-shrink-0">
+                  <i class="fas fa-chart-line text-yellow-400 text-xl"></i>
+                </div>
+                <div class="ml-3">
+                  <h4 class="text-yellow-800 font-semibold mb-2">Continuous Monitoring Essential</h4>
+                  <p class="text-yellow-700">
+                    &#34;Monitor recall@k, latency, and index memory; re-embed on model upgrades&#34; for optimal performance.
+                    <a href="https://medium.com/@adnanmasood/optimizing-chunking-embedding-and-vectorization-for-retrieval-augmented-generation-ea3b083b68f7" class="citation" target="_blank">[152]</a>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+              <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <div class="text-center mb-4">
+                  <div class="text-3xl text-blue-600 mb-2">
+                    <i class="fas fa-percentage"></i>
+                  </div>
+                  <h4 class="font-tiempos text-xl font-bold">Recall@k</h4>
+                </div>
+                <p class="text-sm text-gray-700 mb-4">Proportion of relevant items found within top &#39;k&#39; results</p>
+                <div class="bg-gray-50 p-3 rounded-lg">
+                  <h5 class="font-semibold text-xs mb-2">Target: &gt;95% recall</h5>
+                  <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div class="bg-blue-600 h-2 rounded-full" style="width: 95%"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <div class="text-center mb-4">
+                  <div class="text-3xl text-green-600 mb-2">
+                    <i class="fas fa-clock"></i>
+                  </div>
+                  <h4 class="font-tiempos text-xl font-bold">Query Latency</h4>
+                </div>
+                <p class="text-sm text-gray-700 mb-4">Time to process query and return response</p>
+                <div class="bg-gray-50 p-3 rounded-lg">
+                  <h5 class="font-semibold text-xs mb-2">Target: &lt;100ms&lt; /h5&gt;
+                      <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-green-600 h-2 rounded-full" style="width: 85%"></div>
+                      </div>
+                </h5></div>
+              </div>
+
+              <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <div class="text-center mb-4">
+                  <div class="text-3xl text-purple-600 mb-2">
+                    <i class="fas fa-memory"></i>
+                  </div>
+                  <h4 class="font-tiempos text-xl font-bold">Memory Usage</h4>
+                </div>
+                <p class="text-sm text-gray-700 mb-4">Index memory footprint and efficiency</p>
+                <div class="bg-gray-50 p-3 rounded-lg">
+                  <h5 class="font-semibold text-xs mb-2">Target: &lt;2GB per 1M vectors&lt; /h5&gt;
+                      <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-purple-600 h-2 rounded-full" style="width: 70%"></div>
+                      </div>
+                </h5></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Graph Digitization -->
+      <section id="digitization" class="py-16 bg-white">
+        <div class="max-w-4xl mx-auto px-8">
+          <div class="section-header">
+            <h2 class="font-tiempos text-4xl font-bold text-gray-900">Graph Digitization and Structured Representation</h2>
+          </div>
+
+          <!-- ChartOCR -->
+          <div id="chart-ocr" class="mb-12">
+            <h3 class="font-tiempos text-3xl font-bold mb-6">ChartOCR and Data Extraction</h3>
+
+            <div class="bg-blue-50 p-8 rounded-xl border border-blue-200 mb-8">
+              <h4 class="font-tiempos text-2xl font-bold mb-4 text-blue-900">Microsoft ChartOCR Framework</h4>
+              <p class="text-blue-800 mb-6">
+                A hybrid approach combining deep learning for key point detection with rule-based methods for data interpretation. For line charts, ChartOCR aims to detect pivot points and transform them into structured data formats.
+                <a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2020/12/WACV_2021_ChartOCR.pdf" class="citation" target="_blank">[87]</a>
+              </p>
+
+              <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-white p-4 rounded-lg">
+                  <h5 class="font-semibold mb-3">Technical Architecture</h5>
+                  <ul class="space-y-2 text-sm">
+                    <li class="flex items-start">
+                      <i class="fas fa-brain text-blue-500 mr-2 mt-1"></i>
+                      <span>Modified CornerNet with Hourglass Net backbone</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-eye text-blue-500 mr-2 mt-1"></i>
+                      <span>Key point detection for line charts</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-cogs text-blue-500 mr-2 mt-1"></i>
+                      <span>Type-specific rules for data construction</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-table text-blue-500 mr-2 mt-1"></i>
+                      <span>Output in structured table formats</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg">
+                  <h5 class="font-semibold mb-3">Capabilities</h5>
+                  <ul class="space-y-2 text-sm">
+                    <li class="flex items-start">
+                      <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                      <span>Chart type identification</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                      <span>Axis label extraction via OCR</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                      <span>Pivot point detection for lines</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-exclamation-triangle text-yellow-500 mr-2 mt-1"></i>
+                      <span>Limited on &#34;hard examples&#34; with entangled lines</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h4 class="font-tiempos text-xl font-bold mb-4">Alternative Approaches</h4>
+              <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                  <h5 class="font-semibold mb-3">LayoutLMv2</h5>
+                  <p class="text-sm text-gray-700 mb-3">
+                    Document layout analysis model that identifies and classifies text elements within graphs, combining visual and textual information.
+                    <a href="https://blog.futuresmart.ai/extracting-data-from-charts-and-graphs-the-ocr-challenge-solution" class="citation" target="_blank">[83]</a>
+                  </p>
+                  <div class="bg-gray-50 p-3 rounded-lg">
+                    <h6 class="font-semibold text-xs mb-2">Strengths:</h6>
+                    <ul class="text-xs space-y-1">
+                      <li>• Accurate text element categorization</li>
+                      <li>• Can be fine-tuned for specific graph types</li>
+                      <li>• Combines visual and textual features</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div>
+                  <h5 class="font-semibold mb-3">Open-source OCR</h5>
+                  <p class="text-sm text-gray-700 mb-3">
+                    Tesseract and PaddleOCR for general OCR, with PaddleOCR showing potential for structured information extraction from multimodal content.
+                    <a href="https://aclanthology.org/2024.icon-1.48.pdf" class="citation" target="_blank">[49]</a>
+                  </p>
+                  <div class="bg-gray-50 p-3 rounded-lg">
+                    <h6 class="font-semibold text-xs mb-2">Considerations:</h6>
+                    <ul class="text-xs space-y-1">
+                      <li>• Cost-effective and customizable</li>
+                      <li>• May require significant customization</li>
+                      <li>• Limited out-of-the-box performance</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Continuous Curves -->
+          <div id="continuous-curves" class="mb-12">
+            <h3 class="font-tiempos text-3xl font-bold mb-6">Challenges in Digitizing Continuous Polynomial Curves</h3>
+
+            <div class="bg-red-50 border-l-4 border-red-400 p-6 mb-8">
+              <div class="flex">
+                <div class="flex-shrink-0">
+                  <i class="fas fa-exclamation-triangle text-red-400 text-xl"></i>
+                </div>
+                <div class="ml-3">
+                  <h4 class="text-red-800 font-semibold mb-2">Significant Technical Challenge</h4>
+                  <p class="text-red-700">
+                    Digitizing continuous polynomial curves from rasterized images presents fundamental difficulties due to the nature of inverse problems and information loss in pixelated representations.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 mb-8">
+              <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <h4 class="font-tiempos text-xl font-bold mb-4">Technical Challenges</h4>
+                <ul class="space-y-3">
+                  <li class="flex items-start">
+                    <i class="fas fa-times text-red-500 mr-3 mt-1"></i>
+                    <div>
+                      <strong>Inverse Problem:</strong> No guaranteed unique solution from visual curve to equation
+                      <a href="https://www.indeed.com/career-advice/career-development/graphing-software" class="citation" target="_blank">[14]</a>
+                    </div>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-times text-red-500 mr-3 mt-1"></i>
+                    <div>
+                      <strong>Pixel Limitations:</strong> Accuracy depends heavily on image quality and resolution
+                    </div>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-times text-red-500 mr-3 mt-1"></i>
+                    <div>
+                      <strong>Curve Complexity:</strong> Determining correct polynomial degree is non-trivial
+                    </div>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-times text-red-500 mr-3 mt-1"></i>
+                    <div>
+                      <strong>Scale Mapping:</strong> Error-prone pixel-to-value conversion, especially for non-linear axes
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <h4 class="font-tiempos text-xl font-bold mb-4">Weather Data Specifics</h4>
+                <ul class="space-y-3">
+                  <li class="flex items-start">
+                    <i class="fas fa-cloud text-blue-500 mr-3 mt-1"></i>
+                    <div>
+                      <strong>Confidence Intervals:</strong> Multiple overlaid curves with error bars
+                    </div>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-chart-line text-blue-500 mr-3 mt-1"></i>
+                    <div>
+                      <strong>Logarithmic Scales:</strong> Common in weather data for wide value ranges
+                    </div>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-layer-group text-blue-500 mr-3 mt-1"></i>
+                    <div>
+                      <strong>Multiple Variables:</strong> Temperature, pressure, humidity relationships
+                    </div>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-ruler-combined text-blue-500 mr-3 mt-1"></i>
+                    <div>
+                      <strong>Magnitude Span:</strong> Curves spanning several orders of magnitude
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="insight-highlight">
+              <i class="fas fa-lightbulb mr-2"></i>
+              <strong>Strategic Recommendation:</strong> While ChartOCR and similar tools show promise for standard chart types, continuous polynomial curves in weather data may be better served by multimodal embedding approaches that preserve visual relationships without requiring precise mathematical reconstruction.
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
 
     <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        const loadEl = document.querySelector('#load');
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.firestore().doc('/foo/bar').get().then(() => { });
-        // firebase.functions().httpsCallable('yourFunction')().then(() => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        // firebase.analytics(); // call to activate
-        // firebase.analytics().logEvent('tutorial_completed');
-        // firebase.performance(); // call to activate
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-toggle').addEventListener('click', function() {
+            const toc = document.getElementById('toc');
+            toc.classList.toggle('mobile-open');
+        });
 
-        try {
-          let app = firebase.app();
-          let features = [
-            'auth', 
-            'database', 
-            'firestore',
-            'functions',
-            'messaging', 
-            'storage', 
-            'analytics', 
-            'remoteConfig',
-            'performance',
-          ].filter(feature => typeof app[feature] === 'function');
-          loadEl.textContent = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-          console.error(e);
-          loadEl.textContent = 'Error loading the Firebase SDK, check the console.';
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const toc = document.getElementById('toc');
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            
+            // Check if click is outside menu and not on toggle button
+            if (toc.classList.contains('mobile-open') && 
+                !toc.contains(event.target) && 
+                !mobileMenuToggle.contains(event.target)) {
+                toc.classList.remove('mobile-open');
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Active section highlighting in TOC
+        function updateActiveSection() {
+            const sections = document.querySelectorAll('section[id]');
+            const tocLinks = document.querySelectorAll('.toc-link');
+            
+            let currentSection = '';
+            const scrollPosition = window.scrollY + 100;
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+            
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${currentSection}`) {
+                    link.classList.add('active');
+                }
+            });
         }
-      });
+
+        // Update active section on scroll
+        window.addEventListener('scroll', updateActiveSection);
+        
+        // Initial call to set active section
+        updateActiveSection();
     </script>
-  </body>
-</html>
+  
+
+</body></html>
